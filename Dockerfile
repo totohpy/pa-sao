@@ -15,10 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy app files
 COPY . .
 
-# Streamlit config
-RUN mkdir -p /app/.streamlit
-COPY .streamlit/config.toml /app/.streamlit/config.toml 2>/dev/null || true
-
 EXPOSE 8080
 
 CMD ["streamlit", "run", "Home.py", \
