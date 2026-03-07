@@ -7,7 +7,7 @@ import streamlit as st
 
 PROJECT_ID   = os.getenv("GOOGLE_CLOUD_PROJECT", "pa-gen-ai")
 LOCATION     = "asia-southeast1"
-VERTEX_MODEL = "gemini-2.0-flash-001"
+VERTEX_MODEL = "gemini-2.5-flash"
 
 AI_PROVIDER_OPTIONS = {
     "☁️ Cloud AI (Vertex AI)": "vertex",
@@ -66,8 +66,6 @@ def render_ai_provider_sidebar():
             "<div style='background:rgba(255,255,255,0.10);border-radius:8px;"
             "padding:8px 10px;margin-top:4px;font-size:12px;"
             "color:rgba(255,255,255,0.85);line-height:1.6;'>"
-            "✅ <b>Vertex AI</b> · Gemini 1.5 Flash<br>"
-            f"<span style='opacity:0.7;'>Project: {PROJECT_ID}</span>"
             "</div>",
             unsafe_allow_html=True,
         )
