@@ -61,7 +61,8 @@ st.markdown("""
     padding:22px 20px; height: 100%; width: 100%;
     box-shadow:0 2px 10px rgba(122,32,32,0.06);
     transition: all 0.3s ease;
-    position: absolute; top: 0; left: 0; z-index: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Hover Effect */
@@ -71,20 +72,34 @@ st.markdown("""
     border-color: #7A2020;
 }
 
-/* CSS สำหรับทำให้ st.page_link คลุมทั้ง Card */
+/* ── Overlay Logic (สำคัญมาก) ── */
+/* กำหนดให้ Vertical Block ภายในคอลัมน์เป็นจุดอ้างอิงตำแหน่ง */
+[data-testid="column"] > div > [data-testid="stVerticalBlock"] {
+    position: relative !important;
+}
+
+/* ทำให้ st.page_link ครอบคลุมพื้นที่ทั้งหมดของคอลัมน์ */
 div[data-testid="stPageLink"] {
     position: absolute !important;
-    top: 0 !important; left: 0 !important;
-    width: 100% !important; height: 100% !important;
+    top: 0 !important; 
+    left: 0 !important;
+    width: 100% !important; 
+    height: 180px !important; /* เท่ากับความสูงของ card-container */
     z-index: 10 !important;
+    margin: 0 !important;
 }
+
 div[data-testid="stPageLink"] a {
-    width: 100% !important; height: 100% !important;
-    opacity: 0 !important; /* ซ่อนปุ่มจริงเพื่อให้เห็น Card ด้านล่าง */
+    width: 100% !important; 
+    height: 100% !important;
+    opacity: 0 !important; /* ซ่อนองค์ประกอบจริงเพื่อให้เห็น Card ด้านล่าง */
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .fcard-icon { font-size: 28px; margin-bottom: 10px; }
-.fcard-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px; }
+.fcard-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px; font-family:'Noto Serif Thai',serif; }
 .fcard-desc { font-size: 13px; color: #666; line-height: 1.5; }
 
 .infobox {
@@ -114,7 +129,7 @@ def make_card(icon, title, desc, page_path, is_main=True):
         </div>
     </div>
     """, unsafe_allow_html=True)
-    # วาง page_link ทับลงไปในตำแหน่งเดียวกัน (ด้วย CSS absolute)
+    # วาง page_link ในลำดับถัดมา ซึ่งจะถูกดึงขึ้นไปซ้อนทับด้วย CSS absolute
     st.page_link(page_path, label=" ")
 
 # ── Main Tools ──────────────────────────────
@@ -135,8 +150,7 @@ st.markdown('<div class="sec-lbl" style="margin-top:24px;">ยูทิลิต
 u1, u2, u3, u4 = st.columns(4)
 
 with u1:
-    # แก้ชื่อไฟล์ให้ตรงกับชื่อจริงในระบบ: 5_แปลงภาพเป_นข_อความ__OCR_.py
-    make_card("📄", "OCR แปลงภาพเป็นข้อความ", "ดึงข้อความจากเอกสารภาษาไทย–อังกฤษ", "pages/5_Text Converter (OCR).py", False)
+    make_card("📄", "OCR แปลงภาพเป็นข้อความ", "ดึงข้อความจากเอกสารภาษาไทย–อังกฤษ", "pages/5_แปลงภาพเป_นข_อความ__OCR_.py", False)
 
 with u2:
     make_card("📱", "QR Code Generator", "สร้าง QR Code พร้อมโลโก้หน่วยงาน", "pages/6_QR_Code_Generator.py", False)
