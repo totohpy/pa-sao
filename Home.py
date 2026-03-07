@@ -145,38 +145,37 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── CSS: style page_link buttons as invisible overlay on top of HTML cards ──
+# ── CSS: page_link overlay ────────────────────────────
 st.markdown("""
 <style>
-/* st.page_link — ซ่อน label แล้วทำให้คลิกได้ทั้ง card */
+/* wrapper ครอบ card + page_link */
+.card-wrap {
+    position: relative;
+    display: block;
+    margin-bottom: 0;
+}
+/* ซ่อน st.page_link ทั้งหมด แล้วทำให้เป็น clickable overlay */
 div[data-testid="stPageLink"] {
-    margin-top: -175px !important;
-    height: 175px !important;
-    position: relative !important;
-    z-index: 5 !important;
+    position: absolute !important;
+    top: 0 !important; left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 10 !important;
 }
 div[data-testid="stPageLink"] > a {
     display: block !important;
     width: 100% !important;
-    height: 175px !important;
+    height: 100% !important;
+    min-height: 160px !important;
     opacity: 0 !important;
     cursor: pointer !important;
-    position: absolute !important;
-    top: 0 !important; left: 0 !important;
+    font-size: 0 !important;
 }
-/* util cards (เล็กกว่า) */
-div[data-testid="stPageLink"].util-link {
-    margin-top: -120px !important;
-    height: 120px !important;
-}
-div[data-testid="stPageLink"].util-link > a {
-    height: 120px !important;
-}
-/* hover effect on card when page_link hovered */
-div[data-testid="stPageLink"]:hover + div .fcard-main,
-div[data-testid="stPageLink"]:hover + div .fcard-util {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 40px rgba(122,32,32,0.14);
+/* ป้องกัน page_link ล้นออกนอก column */
+div[data-testid="stColumn"] {
+    overflow: visible !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -186,74 +185,81 @@ st.markdown('<div class="sec-lbl">เครื่องมือหลัก</di
 m1, m2, m3 = st.columns(3, gap="medium")
 
 with m1:
-    st.markdown("""
+    st.markdown("""<div class="card-wrap">
       <div class="fcard-main" style="cursor:pointer;">
         <div class="fcard-geo"></div>
         <div class="fcard-icon">🏳️</div>
         <div class="fcard-title">Audit Design Assistant</div>
         <div class="fcard-desc">วิเคราะห์แผน 6W2H · Logic Model · Flowchart ค้นหาข้อตรวจพบเดิม และแนะนำประเด็นด้วย AI</div>
       </div>""", unsafe_allow_html=True)
-    st.page_link("pages/2_Audit_Design_Assistant.py", label="Audit Design Assistant", icon="🏳️")
+    st.page_link("pages/2_Audit_Design_Assistant.py", label=" ")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with m2:
-    st.markdown("""
+    st.markdown("""<div class="card-wrap">
       <div class="fcard-main" style="cursor:pointer;">
         <div class="fcard-geo circle"></div>
         <div class="fcard-icon">🔮</div>
         <div class="fcard-title">Audit Plan Generator</div>
         <div class="fcard-desc">ร่างแผนและแนวการตรวจสอบอัตโนมัติ AI สร้างเนื้อหา ส่งออก Word / HTML ได้ทันที</div>
       </div>""", unsafe_allow_html=True)
-    st.page_link("pages/3_Audit_Plan_Generator.py", label="Audit Plan Generator", icon="🔮")
+    st.page_link("pages/3_Audit_Plan_Generator.py", label=" ")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with m3:
-    st.markdown("""
+    st.markdown("""<div class="card-wrap">
       <div class="fcard-main" style="cursor:pointer;">
         <div class="fcard-geo diamond"></div>
         <div class="fcard-icon">🤖</div>
         <div class="fcard-title">PA Assistant Chat</div>
         <div class="fcard-desc">ถาม-ตอบผู้ช่วยอัจฉริยะ อ้างอิงคู่มือและผลการตรวจสอบ รองรับ PDF · CSV · TXT</div>
       </div>""", unsafe_allow_html=True)
-    st.page_link("pages/4_PA_Assistant_Chat.py", label="PA Assistant Chat", icon="🤖")
+    st.page_link("pages/4_PA_Assistant_Chat.py", label=" ")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # ── Utility Tools (4x1) ───────────────────────────────
 st.markdown('<div class="sec-lbl" style="margin-top:24px;">ยูทิลิตี้</div>', unsafe_allow_html=True)
 u1, u2, u3, u4 = st.columns(4, gap="medium")
 
 with u1:
-    st.markdown("""
+    st.markdown("""<div class="card-wrap">
       <div class="fcard-util" style="cursor:pointer;">
         <div class="fcard-util-icon">📄</div>
         <div class="fcard-util-title">OCR แปลงภาพเป็นข้อความ</div>
         <div class="fcard-util-desc">ดึงข้อความจากเอกสารภาษาไทย–อังกฤษด้วย Typhoon OCR</div>
       </div>""", unsafe_allow_html=True)
-    st.page_link("pages/5_แปลงภาพเป_นข_อความ__OCR_.py", label="OCR", icon="📄")
+    st.page_link("pages/5_แปลงภาพเป_นข_อความ__OCR_.py", label=" ")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with u2:
-    st.markdown("""
+    st.markdown("""<div class="card-wrap">
       <div class="fcard-util" style="cursor:pointer;">
         <div class="fcard-util-icon">📱</div>
         <div class="fcard-util-title">QR Code Generator</div>
         <div class="fcard-util-desc">สร้าง QR Code พร้อมโลโก้หน่วยงาน ดาวน์โหลด PNG ได้ทันที</div>
       </div>""", unsafe_allow_html=True)
-    st.page_link("pages/6_QR_Code_Generator.py", label="QR Code", icon="📱")
+    st.page_link("pages/6_QR_Code_Generator.py", label=" ")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with u3:
-    st.markdown("""
+    st.markdown("""<div class="card-wrap">
       <div class="fcard-util" style="cursor:pointer;">
         <div class="fcard-util-icon">📊</div>
         <div class="fcard-util-title">Audit Dashboard</div>
         <div class="fcard-util-desc">Dashboard สรุปสภาพปัญหาด้านสิ่งแวดล้อมและการวางแผนตรวจสอบ</div>
       </div>""", unsafe_allow_html=True)
-    st.page_link("pages/7_Audit_Dashboard.py", label="Audit Dashboard", icon="📊")
+    st.page_link("pages/7_Audit_Dashboard.py", label=" ")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with u4:
-    st.markdown("""
+    st.markdown("""<div class="card-wrap">
       <div class="fcard-util" style="cursor:pointer;">
         <div class="fcard-util-icon">🕵️</div>
         <div class="fcard-util-title">Analytics Sandbox</div>
         <div class="fcard-util-desc">Power BI Mode · YData · Sweetviz · PyGWalker วิเคราะห์ข้อมูลเชิงลึก</div>
       </div>""", unsafe_allow_html=True)
-    st.page_link("pages/8_Analytics_Sandbox.py", label="Analytics Sandbox", icon="🕵️")
+    st.page_link("pages/8_Analytics_Sandbox.py", label=" ")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('<div class="infobox">⚠️ การใช้ฟีเจอร์ AI อาจผิดพลาดได้ โปรดตรวจสอบคำตอบอีกครั้ง ระบบไม่มีการจัดเก็บข้อมูลไว้</div>', unsafe_allow_html=True)
