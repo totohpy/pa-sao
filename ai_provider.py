@@ -6,7 +6,7 @@ import os
 import streamlit as st
 
 PROJECT_ID   = os.getenv("GOOGLE_CLOUD_PROJECT", "pa-gen-ai")
-LOCATION     = "asia-southeast3"
+LOCATION     = "asia-southeast1"
 VERTEX_MODEL = "gemini-1.5-flash-002"
 
 AI_PROVIDER_OPTIONS = {
