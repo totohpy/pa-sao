@@ -7,7 +7,7 @@ import streamlit as st
 
 PROJECT_ID   = os.getenv("GOOGLE_CLOUD_PROJECT", "pa-gen-ai")
 LOCATION     = "asia-southeast1"
-VERTEX_MODEL = "gemini-1.5-flash-002"
+VERTEX_MODEL = "gemini-2.0-flash-001"
 
 AI_PROVIDER_OPTIONS = {
     "☁️ Cloud AI (Vertex AI)": "vertex",
