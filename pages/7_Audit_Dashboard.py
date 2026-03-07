@@ -23,9 +23,7 @@ with st.sidebar:
     render_ai_sidebar()
 
 # ── Init ──────────────────────────────────────────────
-if 'api_key_global' not in st.session_state:
-    try: st.session_state['api_key_global'] = st.secrets["api_key"]
-    except: st.session_state['api_key_global'] = ""
+# ลบการเช็ค api_key_global ออก เพื่อใช้ ai_provider แบบรวมศูนย์แทน
 
 # ── Page Header ───────────────────────────────────────
 st.title("📊 Audit Dashboard Builder")
@@ -106,17 +104,21 @@ if df is not None:
                 st.rerun()
 
         if run_ai and ai_prompt:
-            with st.spinner("🤖 AI กำลังวิเคราะห์ข้อมูลและสร้าง Dashboard..."):
-                try:
-                    col_info = []
-                    for c in df.columns:
-                        dtype = str(df[c].dtype)
-                        nunique = df[c].nunique()
-                        col_info.append(f"- {c} ({dtype}, {nunique} unique values)")
+            from ai_provider import is_ready, get_ai_response
+            if not is_ready():
+                st.error("กรุณาตั้งค่า AI Provider ที่แถบด้านข้างก่อนใช้งานฟีเจอร์นี้")
+            else:
+                with st.spinner("🤖 AI กำลังวิเคราะห์ข้อมูลและสร้าง Dashboard..."):
+                    try:
+                        col_info = []
+                        for c in df.columns:
+                            dtype = str(df[c].dtype)
+                            nunique = df[c].nunique()
+                            col_info.append(f"- {c} ({dtype}, {nunique} unique values)")
 
-                    sample_data = df.head(5).to_string()
+                        sample_data = df.head(5).to_string()
 
-                    system_prompt = """คุณคือ Data Analyst ผู้เชี่ยวชาญ Python + Plotly + Streamlit
+                        system_prompt = """คุณคือ Data Analyst ผู้เชี่ยวชาญ Python + Plotly + Streamlit
 ภารกิจ: รับข้อมูล DataFrame และ requirement จากผู้ใช้ แล้ว generate Python code สำหรับสร้าง Dashboard ด้วย Plotly
 
 กฎเหล็ก:
@@ -130,7 +132,7 @@ if df is not None:
 8. ถ้าไม่แน่ใจ column ให้ใช้ df.columns[0], df.columns[1] เป็น fallback
 9. Code ต้องรันได้ทันทีโดยไม่มี input จากผู้ใช้เพิ่มเติม"""
 
-                    user_msg = f"""ข้อมูล DataFrame:
+                        user_msg = f"""ข้อมูล DataFrame:
 คอลัมน์:
 {chr(10).join(col_info)}
 
@@ -141,22 +143,21 @@ if df is not None:
 
 กรุณา generate Python + Streamlit + Plotly code สำหรับสร้าง Dashboard ตามที่ต้องการ"""
 
-                    from ai_provider import get_ai_response
-                    generated_code = get_ai_response(
-                        messages=[{"role":"user","content":user_msg}],
-                        system_prompt=system_prompt,
-                        temperature=0.3, max_tokens=4096,
-                    )
-                    if not isinstance(generated_code, str):
-                        generated_code = ""
-                    # Strip markdown if AI added it
-                    generated_code = generated_code.replace("```python","").replace("```","").strip()
-                    st.session_state['dashboard_code'] = generated_code
-                    st.success("✅ AI สร้าง Dashboard code เรียบร้อยแล้ว!")
+                        generated_code = get_ai_response(
+                            messages=[{"role":"user","content":user_msg}],
+                            system_prompt=system_prompt,
+                            temperature=0.3, max_tokens=4096,
+                        )
+                        if not isinstance(generated_code, str):
+                            generated_code = ""
+                        # Strip markdown if AI added it
+                        generated_code = generated_code.replace("```python","").replace("```","").strip()
+                        st.session_state['dashboard_code'] = generated_code
+                        st.success("✅ AI สร้าง Dashboard code เรียบร้อยแล้ว!")
 
-                except Exception as e:
-                    st.error(f"เกิดข้อผิดพลาด: {e}")
-                    st.info("ลองใช้โหมด Template สำเร็จรูปแทนครับ")
+                    except Exception as e:
+                        st.error(f"เกิดข้อผิดพลาด: {e}")
+                        st.info("ลองใช้โหมด Template สำเร็จรูปแทนครับ")
 
         # ── Show generated dashboard ─────────────────
         if st.session_state.get('dashboard_code'):
