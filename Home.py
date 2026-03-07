@@ -1,6 +1,7 @@
 import streamlit as st
 import sys, os, pathlib
 
+# ── การตั้งค่า Path ──
 _here = pathlib.Path(__file__).resolve().parent
 for _p in [_here, pathlib.Path(os.getcwd())]:
     if (_p / "theme.py").exists():
@@ -20,9 +21,7 @@ with st.sidebar:
     st.markdown(SIDEBAR_HTML, unsafe_allow_html=True)
     render_ai_sidebar()
 
-# ── inject CSS to style st.page_link as cards ──────────
-
-
+# ── inject CSS สำหรับตกแต่ง Card และทำ Overlay ──────────
 st.markdown("""
 <style>
 /* ── Banner ── */
@@ -31,24 +30,6 @@ st.markdown("""
     border-radius:18px; padding:28px 32px 24px; margin-bottom:22px;
     position:relative; overflow:hidden;
     box-shadow:0 10px 36px rgba(122,32,32,0.22);
-}
-/* geometric shapes in banner */
-.banner::before {
-    content:''; position:absolute; top:-50px; right:-50px;
-    width:180px; height:180px;
-    background:rgba(255,255,255,0.06); border-radius:36px;
-    transform:rotate(20deg);
-}
-.banner::after {
-    content:''; position:absolute; bottom:-60px; right:120px;
-    width:130px; height:130px;
-    background:rgba(255,255,255,0.04); border-radius:50%;
-}
-.banner-shape-sm {
-    position:absolute; top:20px; right:200px;
-    width:40px; height:40px;
-    background:rgba(255,255,255,0.05);
-    clip-path:polygon(50% 0%,100% 100%,0% 100%);
 }
 .banner-title {
     font-size:26px; font-weight:700; color:#fff;
@@ -68,68 +49,47 @@ st.markdown("""
 }
 .sec-lbl::after { content:''; flex:1; height:1px; background:#e3e4c4; }
 
-/* ── Main cards ── */
-a.fcard-link { text-decoration:none !important; color:inherit !important; display:block; height:100%; }
-.fcard-main {
+/* ── Card Styling ── */
+.card-container {
+    position: relative;
+    height: 180px;
+    margin-bottom: 20px;
+}
+
+.fcard-main, .fcard-util {
     background:#fff; border:1.5px solid #d8d9b4; border-radius:18px;
-    padding:22px 20px 18px; position:relative; overflow:hidden; height:100%;
+    padding:22px 20px; height: 100%; width: 100%;
     box-shadow:0 2px 10px rgba(122,32,32,0.06);
-    transition:all 0.26s cubic-bezier(.34,1.46,.64,1);
+    transition: all 0.3s ease;
+    position: absolute; top: 0; left: 0; z-index: 1;
 }
-/* red top bar on hover */
-.fcard-main::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:4px;
-    background:linear-gradient(90deg,#7A2020,#c0392b);
-    transform:scaleX(0); transform-origin:left; transition:transform 0.22s ease;
-}
-a.fcard-link:hover .fcard-main { box-shadow:0 12px 40px rgba(122,32,32,0.14); transform:translateY(-6px); border-color:#b8a0a0; }
-a.fcard-link:hover .fcard-main::before { transform:scaleX(1); }
 
-/* green geometric shape — top-right corner */
-.fcard-geo {
-    position:absolute; top:14px; right:14px;
-    width:28px; height:28px; border-radius:7px;
-    background:linear-gradient(135deg,#6D9E51,#BCD9A2);
-    opacity:0.85;
+/* Hover Effect */
+.card-container:hover .fcard-main, .card-container:hover .fcard-util {
+    box-shadow: 0 12px 40px rgba(122,32,32,0.14);
+    transform: translateY(-6px);
+    border-color: #7A2020;
 }
-.fcard-geo.circle  { border-radius:50%; }
-.fcard-geo.diamond { border-radius:4px; transform:rotate(45deg); }
 
-.fcard-icon {
-    width:50px; height:50px; border-radius:14px;
-    background:rgba(122,32,32,0.08); border:1px solid rgba(122,32,32,0.13);
-    display:flex; align-items:center; justify-content:center;
-    margin-bottom:13px; font-size:24px;
+/* CSS สำหรับทำให้ st.page_link คลุมทั้ง Card */
+div[data-testid="stPageLink"] {
+    position: absolute !important;
+    top: 0 !important; left: 0 !important;
+    width: 100% !important; height: 100% !important;
+    z-index: 10 !important;
 }
-.fcard-title { font-size:15px; font-weight:700; color:#1a1a1a; margin-bottom:7px; font-family:'Noto Serif Thai',serif; }
-.fcard-desc  { font-size:13px; color:#666; line-height:1.7; }
+div[data-testid="stPageLink"] a {
+    width: 100% !important; height: 100% !important;
+    opacity: 0 !important; /* ซ่อนปุ่มจริงเพื่อให้เห็น Card ด้านล่าง */
+}
 
-/* ── Utility cards 4x1 ── */
-.fcard-util {
-    background:#fff; border:1px solid #d8d9b4; border-radius:14px;
-    padding:16px 16px 14px; position:relative; overflow:hidden; height:100%;
-    box-shadow:0 1px 5px rgba(122,32,32,0.04);
-    transition:all 0.22s cubic-bezier(.34,1.46,.64,1);
-}
-.fcard-util::after {
-    content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
-    background:#7A2020; transform:scaleX(0); transform-origin:left; transition:transform 0.2s ease;
-}
-a.fcard-link:hover .fcard-util { box-shadow:0 6px 24px rgba(122,32,32,0.12); transform:translateY(-4px); }
-a.fcard-link:hover .fcard-util::after { transform:scaleX(1); }
-.fcard-util-icon {
-    width:38px; height:38px; border-radius:10px;
-    background:rgba(122,32,32,0.07); border:1px solid rgba(122,32,32,0.10);
-    display:flex; align-items:center; justify-content:center;
-    margin-bottom:10px; font-size:19px;
-}
-.fcard-util-title { font-size:13.5px; font-weight:700; color:#1a1a1a; margin-bottom:5px; font-family:'Noto Serif Thai',serif; }
-.fcard-util-desc  { font-size:12px; color:#7a7a7a; line-height:1.6; }
+.fcard-icon { font-size: 28px; margin-bottom: 10px; }
+.fcard-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px; }
+.fcard-desc { font-size: 13px; color: #666; line-height: 1.5; }
 
 .infobox {
-    background:#FEFFD3; border:1px solid #e0e098; border-left:4px solid #7A2020;
-    border-radius:10px; padding:11px 16px; font-size:13px; color:#404040;
-    line-height:1.6; margin-top:10px;
+    background:#FEFFD3; border-left:4px solid #7A2020;
+    border-radius:10px; padding:15px; font-size:13px; margin-top:20px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -137,129 +97,54 @@ a.fcard-link:hover .fcard-util::after { transform:scaleX(1); }
 # ── Banner ────────────────────────────────────────────
 st.markdown("""
 <div class="banner">
-  <div class="banner-shape-sm"></div>
   <div class="banner-title">Performance Audit Planning Studio</div>
-  <div class="banner-desc">
-    เครื่องมืออัจฉริยะสำหรับการตรวจสอบผลสัมฤทธิ์และประสิทธิภาพดำเนินงาน
-  </div>
+  <div class="banner-desc">เครื่องมืออัจฉริยะสำหรับการตรวจสอบผลสัมฤทธิ์และประสิทธิภาพดำเนินงาน</div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── CSS: page_link overlay ────────────────────────────
-st.markdown("""
-<style>
-/* wrapper ครอบ card + page_link */
-.card-wrap {
-    position: relative;
-    display: block;
-    margin-bottom: 0;
-}
-/* ซ่อน st.page_link ทั้งหมด แล้วทำให้เป็น clickable overlay */
-div[data-testid="stPageLink"] {
-    position: absolute !important;
-    top: 0 !important; left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    z-index: 10 !important;
-}
-div[data-testid="stPageLink"] > a {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 160px !important;
-    opacity: 0 !important;
-    cursor: pointer !important;
-    font-size: 0 !important;
-}
-/* ป้องกัน page_link ล้นออกนอก column */
-div[data-testid="stColumn"] {
-    overflow: visible !important;
-}
-</style>
-""", unsafe_allow_html=True)
+# ── ฟังก์ชันช่วยสร้าง Card ──
+def make_card(icon, title, desc, page_path, is_main=True):
+    card_class = "fcard-main" if is_main else "fcard-util"
+    st.markdown(f"""
+    <div class="card-container">
+        <div class="{card_class}">
+            <div class="fcard-icon">{icon}</div>
+            <div class="fcard-title">{title}</div>
+            <div class="fcard-desc">{desc}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    # วาง page_link ทับลงไปในตำแหน่งเดียวกัน (ด้วย CSS absolute)
+    st.page_link(page_path, label=" ")
 
-# ── Main Tools (3 cards) ──────────────────────────────
+# ── Main Tools ──────────────────────────────
 st.markdown('<div class="sec-lbl">เครื่องมือหลัก</div>', unsafe_allow_html=True)
-m1, m2, m3 = st.columns(3, gap="medium")
+m1, m2, m3 = st.columns(3)
 
 with m1:
-    st.markdown("""<div class="card-wrap">
-      <div class="fcard-main" style="cursor:pointer;">
-        <div class="fcard-geo"></div>
-        <div class="fcard-icon">🏳️</div>
-        <div class="fcard-title">Audit Design Assistant</div>
-        <div class="fcard-desc">วิเคราะห์แผน 6W2H · Logic Model · Flowchart ค้นหาข้อตรวจพบเดิม และแนะนำประเด็นด้วย AI</div>
-      </div>""", unsafe_allow_html=True)
-    st.page_link("pages/2_Audit_Design_Assistant.py", label=" ")
-    st.markdown("</div>", unsafe_allow_html=True)
+    make_card("🏳️", "Audit Design Assistant", "วิเคราะห์แผน 6W2H · Logic Model ค้นหาข้อตรวจพบเดิม", "pages/2_Audit_Design_Assistant.py")
 
 with m2:
-    st.markdown("""<div class="card-wrap">
-      <div class="fcard-main" style="cursor:pointer;">
-        <div class="fcard-geo circle"></div>
-        <div class="fcard-icon">🔮</div>
-        <div class="fcard-title">Audit Plan Generator</div>
-        <div class="fcard-desc">ร่างแผนและแนวการตรวจสอบอัตโนมัติ AI สร้างเนื้อหา ส่งออก Word / HTML ได้ทันที</div>
-      </div>""", unsafe_allow_html=True)
-    st.page_link("pages/3_Audit_Plan_Generator.py", label=" ")
-    st.markdown("</div>", unsafe_allow_html=True)
+    make_card("🔮", "Audit Plan Generator", "ร่างแผนและแนวการตรวจสอบอัตโนมัติ ส่งออก Word ได้ทันที", "pages/3_Audit_Plan_Generator.py")
 
 with m3:
-    st.markdown("""<div class="card-wrap">
-      <div class="fcard-main" style="cursor:pointer;">
-        <div class="fcard-geo diamond"></div>
-        <div class="fcard-icon">🤖</div>
-        <div class="fcard-title">PA Assistant Chat</div>
-        <div class="fcard-desc">ถาม-ตอบผู้ช่วยอัจฉริยะ อ้างอิงคู่มือและผลการตรวจสอบ รองรับ PDF · CSV · TXT</div>
-      </div>""", unsafe_allow_html=True)
-    st.page_link("pages/4_PA_Assistant_Chat.py", label=" ")
-    st.markdown("</div>", unsafe_allow_html=True)
+    make_card("🤖", "PA Assistant Chat", "ถาม-ตอบผู้ช่วยอัจฉริยะ อ้างอิงคู่มือและผลการตรวจสอบ", "pages/4_PA_Assistant_Chat.py")
 
-# ── Utility Tools (4x1) ───────────────────────────────
+# ── Utility Tools ───────────────────────────────
 st.markdown('<div class="sec-lbl" style="margin-top:24px;">ยูทิลิตี้</div>', unsafe_allow_html=True)
-u1, u2, u3, u4 = st.columns(4, gap="medium")
+u1, u2, u3, u4 = st.columns(4)
 
 with u1:
-    st.markdown("""<div class="card-wrap">
-      <div class="fcard-util" style="cursor:pointer;">
-        <div class="fcard-util-icon">📄</div>
-        <div class="fcard-util-title">OCR แปลงภาพเป็นข้อความ</div>
-        <div class="fcard-util-desc">ดึงข้อความจากเอกสารภาษาไทย–อังกฤษด้วย Typhoon OCR</div>
-      </div>""", unsafe_allow_html=True)
-    st.page_link("pages/5_Text Converter (OCR).py", label=" ")
-    st.markdown("</div>", unsafe_allow_html=True)
+    # แก้ชื่อไฟล์ให้ตรงกับชื่อจริงในระบบ: 5_แปลงภาพเป_นข_อความ__OCR_.py
+    make_card("📄", "OCR แปลงภาพเป็นข้อความ", "ดึงข้อความจากเอกสารภาษาไทย–อังกฤษ", "pages/5_Text Converter (OCR).py", False)
 
 with u2:
-    st.markdown("""<div class="card-wrap">
-      <div class="fcard-util" style="cursor:pointer;">
-        <div class="fcard-util-icon">📱</div>
-        <div class="fcard-util-title">QR Code Generator</div>
-        <div class="fcard-util-desc">สร้าง QR Code พร้อมโลโก้หน่วยงาน ดาวน์โหลด PNG ได้ทันที</div>
-      </div>""", unsafe_allow_html=True)
-    st.page_link("pages/6_QR_Code_Generator.py", label=" ")
-    st.markdown("</div>", unsafe_allow_html=True)
+    make_card("📱", "QR Code Generator", "สร้าง QR Code พร้อมโลโก้หน่วยงาน", "pages/6_QR_Code_Generator.py", False)
 
 with u3:
-    st.markdown("""<div class="card-wrap">
-      <div class="fcard-util" style="cursor:pointer;">
-        <div class="fcard-util-icon">📊</div>
-        <div class="fcard-util-title">Audit Dashboard</div>
-        <div class="fcard-util-desc">Dashboard สรุปสภาพปัญหาด้านสิ่งแวดล้อมและการวางแผนตรวจสอบ</div>
-      </div>""", unsafe_allow_html=True)
-    st.page_link("pages/7_Audit_Dashboard.py", label=" ")
-    st.markdown("</div>", unsafe_allow_html=True)
+    make_card("📊", "Audit Dashboard", "Dashboard สรุปสภาพปัญหาและการวางแผนตรวจสอบ", "pages/7_Audit_Dashboard.py", False)
 
 with u4:
-    st.markdown("""<div class="card-wrap">
-      <div class="fcard-util" style="cursor:pointer;">
-        <div class="fcard-util-icon">🕵️</div>
-        <div class="fcard-util-title">Analytics Sandbox</div>
-        <div class="fcard-util-desc">Power BI Mode · YData · Sweetviz · PyGWalker วิเคราะห์ข้อมูลเชิงลึก</div>
-      </div>""", unsafe_allow_html=True)
-    st.page_link("pages/8_Analytics_Sandbox.py", label=" ")
-    st.markdown("</div>", unsafe_allow_html=True)
+    make_card("🕵️", "Analytics Sandbox", "วิเคราะห์ข้อมูลเชิงลึกด้วย Power BI Mode และ PyGWalker", "pages/8_Analytics_Sandbox.py", False)
 
-st.markdown("<br>", unsafe_allow_html=True)
 st.markdown('<div class="infobox">⚠️ การใช้ฟีเจอร์ AI อาจผิดพลาดได้ โปรดตรวจสอบคำตอบอีกครั้ง ระบบไม่มีการจัดเก็บข้อมูลไว้</div>', unsafe_allow_html=True)
