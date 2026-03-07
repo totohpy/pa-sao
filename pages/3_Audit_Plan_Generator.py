@@ -1,7 +1,6 @@
 import streamlit as st
 from datetime import datetime
 import re
-from openai import OpenAI
 import os, html, io, base64, json
 import docx
 from docx.enum.section import WD_ORIENT
@@ -47,9 +46,6 @@ def init_plan_state():
         }
     if "ui_feedback_message" not in ss:
         ss.ui_feedback_message = None
-    if "api_key_global" not in ss:
-        try:    ss["api_key_global"] = st.secrets["api_key"]
-        except: ss["api_key_global"] = ""
 
 init_plan_state()
 
@@ -81,9 +77,10 @@ def add_issue(obj_index, parent_issue_path=None):
 def run_ai_for_field(obj_index, path, field_name):
     st.session_state.ui_feedback_message = None
     try:
-        api_key = st.session_state.get("api_key_global","")
-        if not api_key and st.session_state.get("ai_provider","vertex") != "vertex":
-            st.session_state.ui_feedback_message = ("error","ไม่พบ API Key"); return
+        from ai_provider import is_ready, get_ai_response
+        if not is_ready():
+            st.session_state.ui_feedback_message = ("error", "ยังไม่ได้ตั้งค่า AI Provider (ตรวจสอบที่แถบด้านข้าง)"); return
+            
         obj = st.session_state.plan_gen_data["objectives"][obj_index]
         target = obj
         for idx in path: target = target["issues"][idx]
@@ -100,7 +97,7 @@ def run_ai_for_field(obj_index, path, field_name):
         }
         prompt = (f"คุณคือผู้เชี่ยวชาญด้านการตรวจสอบภาครัฐ Performance Audit\n{ctx}\n"
                   f"คำสั่ง: {instructions.get(field_name,'')}\nตอบเป็น bullet points เท่านั้น")
-        from ai_provider import get_ai_response
+        
         text = get_ai_response(
             messages=[{"role":"user","content":prompt}],
             temperature=0.5, max_tokens=4096,
