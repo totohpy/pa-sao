@@ -58,7 +58,7 @@ def chat(system_prompt: str, user_prompt: str,
     """
     _init_vertex()
     model = _GenerativeModel(
-        "gemini-1.5-flash-001",
+        "gemini-2.0-flash-001",
         system_instruction=system_prompt
     )
     resp = model.generate_content(
@@ -80,7 +80,7 @@ def chat_stream(system_prompt: str, user_prompt: str,
     """
     _init_vertex()
     model = _GenerativeModel(
-        "gemini-1.5-flash-001",
+        "gemini-2.0-flash-001",
         system_instruction=system_prompt
     )
     stream = model.generate_content(
