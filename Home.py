@@ -228,7 +228,7 @@ with u1:
         <div class="fcard-util-title">OCR แปลงภาพเป็นข้อความ</div>
         <div class="fcard-util-desc">ดึงข้อความจากเอกสารภาษาไทย–อังกฤษด้วย Typhoon OCR</div>
       </div>""", unsafe_allow_html=True)
-    st.page_link("pages/5_แปลงภาพเป_นข_อความ__OCR_.py", label=" ")
+    st.page_link("pages/5_Text Converter (OCR).py", label=" ")
     st.markdown("</div>", unsafe_allow_html=True)
 
 with u2:
