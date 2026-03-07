@@ -58,7 +58,7 @@ def extract_text_from_image(image_bytes):
         return f"เกิดข้อผิดพลาดในการประมวลผล: {str(e)}"
 
 # ── ส่วน UI หลัก ─────────────────────────────────────────
-uploaded_file = st.file_uploader("อัปโหลดไฟล์ภาพ...", type=['jpg', 'jpeg', 'png'])
+uploaded_file = st.file_uploader("อัปโหลดไฟล์ภาพ...", type=['jpg', 'jpeg', 'png','pdf'])
 
 if uploaded_file is not None:
     c1, c2 = st.columns(2)
